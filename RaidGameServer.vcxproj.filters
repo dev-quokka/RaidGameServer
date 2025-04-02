@@ -29,5 +29,8 @@
     <ClInclude Include="RaidRoomManager.h">
       <Filter>헤더 파일\RaidRoomManager</Filter>
     </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>헤더 파일\RaidRoomManager</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

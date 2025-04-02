@@ -8,10 +8,15 @@
 #include <cstdint>
 #include <iostream>
 #include <winsock2.h>
+#include <windows.h>
 #include <ws2tcpip.h>
 #include <boost/lockfree/queue.hpp>
 #include <tbb/concurrent_hash_map.h>
 
+#include "Room.h"
+
+constexpr uint16_t TICK_RATE = 5; // 1초에 몇번씩 보낼건지
+constexpr int PORT = 8500;
 constexpr int UDP_PORT = 50000;
 constexpr uint16_t MAX_ROOM = 10;
 
@@ -35,6 +40,7 @@ public:
 		}
 	}
 
+	bool init();
 	bool CreateTimeCheckThread();
 	bool CreateTickRateThread();
 	void TimeCheckThread();
@@ -62,7 +68,9 @@ private:
 	std::thread tickRateThread;
 
 	// 8 bytes
-	SOCKET udpSocket;
+	SOCKET rgsSkt;
+	SOCKET udpSkt;
+	HANDLE rgsIOCPHandle;
 
 	// 1 bytes
 	std::atomic<bool> timeChekcRun;

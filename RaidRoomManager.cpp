@@ -1,5 +1,68 @@
 #include "RaidRoomManager.h"
 
+bool RaidRoomManager::init() {
+	WSADATA wsaData;
+    int check = 0;
+
+	check = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (check) {
+        std::cout << "WSAStartup 실패" << std::endl;
+        return false;
+    }
+
+    rgsSkt = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, NULL, WSA_FLAG_OVERLAPPED);
+    if (rgsSkt == INVALID_SOCKET) {
+        std::cout << "Server Socket 생성 실패" << std::endl;
+        return false;
+    }
+
+    SOCKADDR_IN addr;
+    addr.sin_port = htons(PORT);
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    check = bind(rgsSkt, (SOCKADDR*)&addr, sizeof(addr));
+    if (check) {
+        std::cout << "bind 함수 실패:" << WSAGetLastError() << std::endl;
+        return false;
+    }
+
+    check = listen(rgsSkt, SOMAXCONN);
+    if (check) {
+        std::cout << "listen 함수 실패" << std::endl;
+        return false;
+    }
+
+    rgsIOCPHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, NULL, 0);
+    if (rgsIOCPHandle == NULL) {
+        std::cout << "iocp 핸들 생성 실패" << std::endl;
+        return false;
+    }
+
+    auto bIOCPHandle = CreateIoCompletionPort((HANDLE)rgsSkt, rgsIOCPHandle, (uint32_t)0, 0);
+    if (bIOCPHandle == nullptr) {
+        std::cout << "iocp 핸들 바인드 실패" << std::endl;
+        return false;
+    }
+
+    udpSkt = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    if (udpSkt == INVALID_SOCKET) {
+        std::cout << "Server Socket 생성 실패" << std::endl;
+        return false;
+    }
+
+	if (!CreateTimeCheckThread()) {
+		return false;
+	}
+
+	if (!CreateTickRateThread()) {
+		return false;
+	}
+
+	return true;
+}
+
 bool RaidRoomManager::CreateTimeCheckThread() {
     timeChekcRun = true;
     timeCheckThread = std::thread([this]() {TimeCheckThread(); });
