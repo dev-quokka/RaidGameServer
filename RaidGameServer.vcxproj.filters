@@ -13,19 +13,19 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="헤더 파일\RaidRoomManager">
-      <UniqueIdentifier>{28cba73d-1cef-4679-bfc4-35b5ffcac769}</UniqueIdentifier>
-    </Filter>
     <Filter Include="헤더 파일\OverLappedManager">
       <UniqueIdentifier>{a2e79dfd-2fc1-4aa0-9ca5-a158cc951dc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\RoomManager">
+      <UniqueIdentifier>{28cba73d-1cef-4679-bfc4-35b5ffcac769}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="RaidRoomManager.cpp">
-      <Filter>헤더 파일\RaidRoomManager</Filter>
+    <ClCompile Include="RoomManager.cpp">
+      <Filter>헤더 파일\RoomManager</Filter>
     </ClCompile>
     <ClCompile Include="OverLappedManager.cpp">
       <Filter>헤더 파일\OverLappedManager</Filter>
@@ -44,11 +44,11 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="RaidRoomManager.h">
-      <Filter>헤더 파일\RaidRoomManager</Filter>
+    <ClInclude Include="RoomManager.h">
+      <Filter>헤더 파일\RoomManager</Filter>
     </ClInclude>
     <ClInclude Include="Room.h">
-      <Filter>헤더 파일\RaidRoomManager</Filter>
+      <Filter>헤더 파일\RoomManager</Filter>
     </ClInclude>
     <ClInclude Include="OverLappedManager.h">
       <Filter>헤더 파일\OverLappedManager</Filter>

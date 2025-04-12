@@ -137,7 +137,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OverLappedManager.cpp" />
     <ClCompile Include="PacketManager.cpp" />
-    <ClCompile Include="RaidRoomManager.cpp" />
+    <ClCompile Include="RoomManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CircularBuffer.h" />
@@ -148,7 +148,7 @@
     <ClInclude Include="OverLappedManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />
-    <ClInclude Include="RaidRoomManager.h" />
+    <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Room.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

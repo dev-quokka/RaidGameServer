@@ -21,6 +21,7 @@
 
 #include "OverLappedManager.h"
 #include "ConnUsersManager.h"
+#include "RoomManager.h"
 #include "PacketManager.h"
 
 constexpr uint16_t MAX_USERS_OBJECT = 30; // 1서버 평균 접속 유저를 30으로 가정하고 미리 동적할당한 유저 객체 (나중에 1서버 평균 유저 늘어나면 카운트 수정)
@@ -53,7 +54,8 @@ private:
 
     OverLappedManager* overLappedManager;
     ConnUsersManager* connUsersManager;
-    RedisManager* redisManager;
+    RoomManager* roomManager;
+    PacketManager* packetManager;
 
     // 2 bytes
     uint16_t MaxThreadCnt = 0;
