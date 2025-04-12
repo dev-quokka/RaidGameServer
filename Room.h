@@ -7,15 +7,10 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-
-class MatchingManager;
-class InGameUser;
-
 struct RaidUserInfo {
 	std::atomic<unsigned int> userScore = 0;
 	uint16_t userObjNum; // TCP Socket
 	sockaddr_in userAddr;
-	InGameUser* inGameUser;
 };
 
 class Room {
@@ -165,7 +160,6 @@ private:
 
 	// 8 bytes
 	SOCKET* udpSkt;
-	MatchingManager* matchingManager;
 	std::chrono::time_point<std::chrono::steady_clock> endTime = std::chrono::steady_clock::now() + std::chrono::minutes(2); // 생성 되자마자 삭제 방지
 
 	// 32 bytes

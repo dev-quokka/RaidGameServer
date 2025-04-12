@@ -16,6 +16,9 @@
     <Filter Include="헤더 파일\RaidRoomManager">
       <UniqueIdentifier>{28cba73d-1cef-4679-bfc4-35b5ffcac769}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\OverLappedManager">
+      <UniqueIdentifier>{a2e79dfd-2fc1-4aa0-9ca5-a158cc951dc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -24,6 +27,21 @@
     <ClCompile Include="RaidRoomManager.cpp">
       <Filter>헤더 파일\RaidRoomManager</Filter>
     </ClCompile>
+    <ClCompile Include="OverLappedManager.cpp">
+      <Filter>헤더 파일\OverLappedManager</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketManager.cpp">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServer1.cpp">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CircularBuffer.cpp">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnUsersManager.cpp">
+      <Filter>헤더 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RaidRoomManager.h">
@@ -31,6 +49,30 @@
     </ClInclude>
     <ClInclude Include="Room.h">
       <Filter>헤더 파일\RaidRoomManager</Filter>
+    </ClInclude>
+    <ClInclude Include="OverLappedManager.h">
+      <Filter>헤더 파일\OverLappedManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Define.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Packet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PacketManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServer1.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CircularBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnUsersManager.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ConnUser.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

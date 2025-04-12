@@ -102,15 +102,16 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\82104\oneapi-tbb-2022.0.0\include;C:\Users\82104\hiredis\Build\hiredis_install\include;C:\Users\82104\boost_1_87_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\82104\OpenSSL-Win64\include;C:\Users\82104\jwt-cpp-master\include;C:\Users\82104\oneapi-tbb-2022.0.0\include;C:\Users\82104\hiredis\Build\hiredis_install\include;C:\Users\82104\boost_1_87_0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\82104\hiredis\Build\hiredis_install\lib;C:\Users\82104\boost_1_87_0;C:\Users\82104\oneapi-tbb-2022.0.0\lib\intel64\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>C:\Users\82104\hiredis\Build\hiredis_install\lib\redis++.lib;C:\Users\82104\hiredis\Build\hiredis_install\lib\hiredisd.lib;C:\Users\82104\hiredis\Build\hiredis_install\lib\redis++_static.lib;C:\Users\82104\oneapi-tbb-2022.0.0\lib\intel64\vc14\tbb.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\82104\OpenSSL-Win64\lib;C:\Users\82104\hiredis\Build\hiredis_install\lib;C:\Users\82104\boost_1_87_0;C:\Users\82104\oneapi-tbb-2022.0.0\lib\intel64\vc14;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Users\82104\hiredis\Build\hiredis_install\lib\redis++.lib;C:\Users\82104\hiredis\Build\hiredis_install\lib\hiredisd.lib;C:\Users\82104\hiredis\Build\hiredis_install\lib\redis++_static.lib;C:\Users\82104\oneapi-tbb-2022.0.0\lib\intel64\vc14\tbb.lib;C:\Users\82104\OpenSSL-Win64\lib\VC\x64\MD\libcrypto.lib;C:\Users\82104\OpenSSL-Win64\lib\VC\x64\MD\libssl.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,10 +131,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CircularBuffer.cpp" />
+    <ClCompile Include="ConnUsersManager.cpp" />
+    <ClCompile Include="GameServer1.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OverLappedManager.cpp" />
+    <ClCompile Include="PacketManager.cpp" />
     <ClCompile Include="RaidRoomManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircularBuffer.h" />
+    <ClInclude Include="ConnUser.h" />
+    <ClInclude Include="ConnUsersManager.h" />
+    <ClInclude Include="Define.h" />
+    <ClInclude Include="GameServer1.h" />
+    <ClInclude Include="OverLappedManager.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="PacketManager.h" />
     <ClInclude Include="RaidRoomManager.h" />
     <ClInclude Include="Room.h" />
   </ItemGroup>
