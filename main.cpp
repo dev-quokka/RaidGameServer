@@ -1,7 +1,7 @@
 #include <iostream>
 #include "GameServer1.h"
 
-const uint16_t PORT = 9211;
+const int PORT = 9501;
 const uint16_t maxThreadCount = 1;
 
 int main() {
