@@ -8,21 +8,14 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
-struct RaidUserInfo {
-	std::string userId;
-	sockaddr_in userAddr;
-	unsigned int userMaxScore;
-	uint16_t userLevel;
-	uint16_t userPk;
-	uint16_t userConnObjNum = 0; // 유저 통신 고유 번호
-	uint16_t userRaidServerObjNum = 0; // 레이드 방에서 사용하는 번호
-	std::atomic<unsigned int> userScore = 0;
-};
+#include "RaidUserInfo.h"
+
+constexpr int waitingUsersTime = 30; // Time to wait for all users to be ready
 
 class Room {
 public:
 	Room(SOCKET* udpSkt_) {
-		ruInfos.resize(3); // 인원수 + 1
+		ruInfos.resize(3); // // Add +1 to avoid using index 0
 		udpSkt = udpSkt_;
 	}
 	~Room() {
@@ -47,17 +40,17 @@ public:
 		return true;
 	}
 
-	bool SetUserConnObjNum(uint16_t userRaidServerObjNum_, uint16_t userConnObjNum_) {
+	bool SetUserConnObjNum(uint16_t userRaidServerObjNum_, uint16_t userConnObjNum_) { // Set user unique ID for use in Game Server
 		if (userRaidServerObjNum_ == 1) ruInfos[1]->userConnObjNum = userConnObjNum_;
 		else if (userRaidServerObjNum_ == 2) ruInfos[2]->userConnObjNum = userConnObjNum_;
 		return true;
 	}
 
-	void SetSockAddr(uint16_t userRaidServerObjNum_, sockaddr_in userAddr_) {
+	void SetSockAddr(uint16_t userRaidServerObjNum_, sockaddr_in userAddr_) { // Set UDP socket address received from user 
 		ruInfos[userRaidServerObjNum_]->userAddr = userAddr_;
 	}
 
-	std::chrono::time_point<std::chrono::steady_clock> SetEndTime() {
+	std::chrono::time_point<std::chrono::steady_clock> SetEndTime() { // Set raid end time
 		endTime = std::chrono::steady_clock::now() + std::chrono::seconds(10);
 		return endTime;
 	}
@@ -98,7 +91,7 @@ public:
 	}
 
 	uint16_t GetRoomUserCnt() {
-		return ruInfos.size();
+		return static_cast<uint16_t>(ruInfos.size());
 	}
 
 	std::chrono::time_point<std::chrono::steady_clock> GetEndTime() {
@@ -118,7 +111,7 @@ public:
 		return timeOver;
 	}
 
-	bool StartCheck() {
+	bool StartCheck() { // Check if all users are ready
 		if (startCheck.fetch_add(1) + 1 == 2) {
 			endTime = std::chrono::steady_clock::now() + std::chrono::minutes(2) + std::chrono::seconds(8);
 			return true;
@@ -126,7 +119,7 @@ public:
 		return false;
 	}
 
-	bool EndCheck() {
+	bool EndCheck() { // Check if the room has already ended 
 		if (startCheck.fetch_sub(1) - 1 == 0) {
 			return true;
 		}
@@ -136,14 +129,15 @@ public:
 
 	//  ---------------------------- RAID  ----------------------------
 
-	void SendSyncMsg() {
+	void SendSyncMsg() { // Send sync messages to active players
 		unsigned int tempMobHp = mobHp.load();
 		for (int i = 1; i < ruInfos.size(); i++) { // 게임중인 유저들에게 동기화 메시지 전송
 			sendto(*udpSkt, (char*)&tempMobHp, sizeof(tempMobHp), 0, (sockaddr*)&ruInfos[i]->userAddr, sizeof(ruInfos[i]->userAddr));
 		}
+		std::cout << "RoomNum : " << roomNum << ", Mob Hp : " << tempMobHp << std::endl;
 	}
 
-	std::pair<unsigned int, unsigned int> Hit(uint16_t userNum_, unsigned int damage_) { // current mobhp, score
+	std::pair<unsigned int, unsigned int> Hit(uint16_t userNum_, unsigned int damage_) { // {Current mobhp, Acquired score}
 		if (mobHp <= 0 || finishCheck.load()) {
 			return { 0,0 };
 		}
@@ -154,20 +148,11 @@ public:
 		if ((currentMobHp_ = mobHp.fetch_sub(damage_) - damage_) <= 0) { // Hit
 			finishCheck.store(true);
 			score_ = ruInfos[userNum_]->userScore.fetch_add(currentMobHp_ + damage_) + (currentMobHp_ + damage_);
-			std::cout << "몹 이미 죽음. 나머지 스코어 전송" << std::endl;
+			std::cout << "Mob already defeated, send acquired score" << std::endl;
 			return { 0, score_ };
 		}
 
 		score_ = ruInfos[userNum_]->userScore.fetch_add(damage_) + damage_;
-
-		for (int i = 0; i < ruInfos.size(); i++) { // 나머지 유저들에게도 바뀐 몹 hp값 보내주기
-
-			memcpy(mobHpBuf, &currentMobHp_, sizeof(currentMobHp_));
-
-			sendto(*udpSkt, mobHpBuf, sizeof(mobHpBuf), 0, (sockaddr*)&ruInfos[i]->userAddr, sizeof(ruInfos[i]->userAddr));
-
-			std::cout << "현재 몹 HP : " << mobHp << std::endl;
-		}
 
 		return { currentMobHp_, score_ };
 	}
@@ -178,7 +163,7 @@ private:
 
 	// 8 bytes
 	SOCKET* udpSkt;
-	std::chrono::time_point<std::chrono::steady_clock> endTime = std::chrono::steady_clock::now() + std::chrono::minutes(2); // 생성 되자마자 삭제 방지
+	std::chrono::time_point<std::chrono::steady_clock> endTime = std::chrono::steady_clock::now() + std::chrono::seconds(waitingUsersTime); // Add buffer time to prevent instant room deletion
 
 	// 4 bytes
 	std::atomic<int> mobHp;

@@ -1,6 +1,8 @@
 #include <iostream>
 #include "GameServer1.h"
 
+// *** Start the matching server first, then the game server ***
+
 const int PORT = 9501;
 const uint16_t maxThreadCount = 1;
 
@@ -12,7 +14,6 @@ int main() {
     }
 
     gameServer1.StartWork();
-    gameServer1.CenterConnect();
 
     std::cout << "=== GAME SERVER 1 START ===" << std::endl;
     std::cout << "=== If You Want Exit, Write game1 ===" << std::endl;
