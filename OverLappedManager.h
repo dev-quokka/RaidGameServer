@@ -18,7 +18,7 @@ public:
 
 	void init();
 	OverlappedEx* getOvLap();
-	void returnOvLap(OverlappedEx* overlappedTCP_); // Reset object
+	void returnOvLap(OverlappedEx* overlappedEx_); // Reset object
 
 private:
 	boost::lockfree::queue<OverlappedEx*> ovLapPool{ OVERLAPPED_TCP_QUEUE_SIZE };

@@ -8,8 +8,8 @@ void PacketManager::init(const uint16_t packetThreadCnt_) {
     packetIDTable = std::unordered_map<uint16_t, RECV_PACKET_FUNCTION>();
 
     // SYSTEM
-    packetIDTable[(UINT16)PACKET_ID::IM_GAME_RESPONSE] = &PacketManager::ImGameResponse;
-    packetIDTable[(UINT16)PACKET_ID::MATCHING_SERVER_CONNECT_RESPONSE] = &PacketManager::ImGameResponsefromMatchingServer;
+    packetIDTable[(UINT16)PACKET_ID::RAID_SERVER_CONNECT_RESPONSE] = &PacketManager::CenterServerConnectResponse;
+    packetIDTable[(UINT16)PACKET_ID::MATCHING_SERVER_CONNECT_RESPONSE_TO_RAID_SERVER] = &PacketManager::MatchingServerConnectResponse;
 
     packetIDTable[(UINT16)PACKET_ID::MATCHING_REQUEST_TO_GAME_SERVER] = &PacketManager::MakeRoom;
 
@@ -85,8 +85,8 @@ void PacketManager::PushPacket(const uint16_t connObjNum_, const uint32_t size_,
 
 //  ---------------------------- SYSTEM  ----------------------------
 
-void PacketManager::ImGameResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_) {
-    auto centerConn = reinterpret_cast<IM_GAME_RESPONSE*>(pPacket_);
+void PacketManager::CenterServerConnectResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_) {
+    auto centerConn = reinterpret_cast<RAID_SERVER_CONNECT_RESPONSE*>(pPacket_);
 
     if (!centerConn->isSuccess) {
         std::cout << "Failed to Authenticate with Center Server" << std::endl;
@@ -96,8 +96,8 @@ void PacketManager::ImGameResponse(uint16_t connObjNum_, uint16_t packetSize_, c
     std::cout << "Successfully Authenticated with Center Server" << std::endl;
 }
 
-void PacketManager::ImGameResponsefromMatchingServer(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_) {
-    auto matchConn = reinterpret_cast<IM_GAME_RESPONSE*>(pPacket_);
+void PacketManager::MatchingServerConnectResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_) {
+    auto matchConn = reinterpret_cast<MATCHING_SERVER_CONNECT_RESPONSE_TO_RAID_SERVER*>(pPacket_);
 
     if (!matchConn->isSuccess) {
         std::cout << "Failed to Authenticate with Matching Server" << std::endl;
@@ -140,12 +140,12 @@ void PacketManager::UserConnect(uint16_t connObjNum_, uint16_t packetSize_, char
 
             ucRes.isSuccess = true;
             connUsersManager->FindUser(connObjNum_)->PushSendMsg(sizeof(USER_CONNECT_GAME_RESPONSE), (char*)&ucRes);
-            std::cout << (std::string)userConn->userId << " Connection Success" << std::endl;
+            std::cout << (std::string)userConn->userId << " Authentication Successful" << std::endl;
         }
         else {
             ucRes.isSuccess = false;
             connUsersManager->FindUser(connObjNum_)->PushSendMsg(sizeof(USER_CONNECT_GAME_RESPONSE), (char*)&ucRes);
-            std::cout << (std::string)userConn->userId << " JWT Check Fail" << std::endl;
+            std::cout << (std::string)userConn->userId << " Authentication Failed" << std::endl;
         }
     }
     catch (const sw::redis::Error& e) {

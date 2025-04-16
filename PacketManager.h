@@ -16,6 +16,7 @@
 #include "RoomManager.h"
 #include "ConnUsersManager.h"
 
+constexpr int MAX_RAID_PACKET_SIZE = 128;
 
 class PacketManager {
 public:
@@ -43,8 +44,8 @@ private:
     void UserDisConnect(uint16_t connObjNum_);
 
     //SYSTEM
-    void ImGameResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
-    void ImGameResponsefromMatchingServer(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
+    void CenterServerConnectResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
+    void MatchingServerConnectResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
     void UserConnect(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
 
     void RaidTeamInfo(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
@@ -59,7 +60,7 @@ private:
     sw::redis::ConnectionOptions connection_options;
 
     // 136 bytes
-    boost::lockfree::queue<DataPacket> procSktQueue{ 512 };
+    boost::lockfree::queue<DataPacket> procSktQueue{ MAX_RAID_PACKET_SIZE };
 
     // 80 bytes
     std::unordered_map<uint16_t, RECV_PACKET_FUNCTION> packetIDTable;

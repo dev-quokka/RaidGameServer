@@ -10,7 +10,7 @@
 
 #include "RaidUserInfo.h"
 
-constexpr int waitingUsersTime = 30; // Time to wait for all users to be ready
+constexpr int WAITING_USERS_TIME = 30; // Time to wait for all users to be ready
 
 class Room {
 public:
@@ -163,7 +163,7 @@ private:
 
 	// 8 bytes
 	SOCKET* udpSkt;
-	std::chrono::time_point<std::chrono::steady_clock> endTime = std::chrono::steady_clock::now() + std::chrono::seconds(waitingUsersTime); // Add buffer time to prevent instant room deletion
+	std::chrono::time_point<std::chrono::steady_clock> endTime = std::chrono::steady_clock::now() + std::chrono::seconds(WAITING_USERS_TIME); // Add buffer time to prevent instant room deletion
 
 	// 4 bytes
 	std::atomic<int> mobHp;

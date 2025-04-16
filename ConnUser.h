@@ -14,8 +14,8 @@ class ConnUser {
 public:
 	ConnUser(uint32_t bufferSize_, uint16_t connObjNum_, HANDLE sIOCPHandle_, OverLappedManager* overLappedManager_)
 		: connObjNum(connObjNum_), sIOCPHandle(sIOCPHandle_), overLappedManager(overLappedManager_) {
+		
 		userSkt = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_IP, NULL, 0, WSA_FLAG_OVERLAPPED);
-
 		if (userSkt == INVALID_SOCKET) {
 			std::cout << "Client socket Error : " << GetLastError() << std::endl;
 		}
@@ -23,7 +23,7 @@ public:
 		auto tIOCPHandle = CreateIoCompletionPort((HANDLE)userSkt, sIOCPHandle_, (ULONG_PTR)0, 0);
 		if (tIOCPHandle == INVALID_HANDLE_VALUE)
 		{
-			std::cout << "reateIoCompletionPort Fail :" << GetLastError() << std::endl;
+			std::cout << "createIoCompletionPort Fail : " << GetLastError() << std::endl;
 		}
 
 		circularBuffer = std::make_unique<CircularBuffer>(bufferSize_);
@@ -92,7 +92,7 @@ public:
 		auto tIOCPHandle = CreateIoCompletionPort((HANDLE)userSkt, sIOCPHandle, (ULONG_PTR)0, 0);
 		if (tIOCPHandle == INVALID_HANDLE_VALUE)
 		{
-			std::cout << "reateIoCompletionPort Fail :" << GetLastError() << std::endl;
+			std::cout << "createIoCompletionPort Fail : " << GetLastError() << std::endl;
 		}
 
 	}

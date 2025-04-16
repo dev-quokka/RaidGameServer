@@ -23,7 +23,7 @@
 #include "RoomManager.h"
 #include "PacketManager.h"
 
-constexpr uint16_t MAX_USERS_OBJECT = 13; // User objects allocated for average Gmae Server1 load
+constexpr uint16_t MAX_USERS_OBJECT = 13; // User objects allocated for average Gmae Server1 load + additional allocation for connected servers 
 
 #define CENTER_SERVER_IP "127.0.0.1"
 #define CENTER_SERVER_PORT 9090
