@@ -1,6 +1,9 @@
 #pragma once
 
 enum class ServerType : uint16_t {
+	// Center Server (0)
+	CenterServer = 0,
+
 	// Channel Server (11~)
 	ChannelServer01 = 1,
 	ChannelServer02 = 2,

@@ -50,9 +50,14 @@ void PacketManager::SetManager(ConnUsersManager* connUsersManager_, RoomManager*
 bool PacketManager::CreatePacketThread(const uint16_t packetThreadCnt_) {
     packetRun = true;
 
-    for (int i = 0; i < packetThreadCnt_; i++) {
-        packetThreads.emplace_back(std::thread([this]() {PacketThread(); }));
+    try {
+        packetThreads.emplace_back(std::thread([this]() { PacketThread(); }));
     }
+    catch (const std::system_error& e) {
+        std::cerr << "Create Packet Thread Failed : " << e.what() << std::endl;
+        return false;
+    }
+
     return true;
 }
 
@@ -156,10 +161,6 @@ void PacketManager::UserConnect(uint16_t connObjNum_, uint16_t packetSize_, char
     }
 }
 
-void PacketManager::UserDisConnect(uint16_t connObjNum_) {
-
-}
-
 void PacketManager::MakeRoom(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_) {
     auto matchReqPacket = reinterpret_cast<MATCHING_REQUEST_TO_GAME_SERVER*>(pPacket_);
 
@@ -174,8 +175,12 @@ void PacketManager::MakeRoom(uint16_t connObjNum_, uint16_t packetSize_, char* p
 
     std::vector<std::string> fields = { "id", "level", "raidScore"};
     std::vector<sw::redis::OptionalString> values;
+    
+    MATCHING_RESPONSE_FROM_GAME_SERVER matchResPacket;
+    matchResPacket.PacketId = (uint16_t)PACKET_ID::MATCHING_RESPONSE_FROM_GAME_SERVER;
+    matchResPacket.PacketLength = sizeof(MATCHING_RESPONSE_FROM_GAME_SERVER);
 
-    { // Get matched user info from Redis Cluster
+    try { // Get matched user info from Redis Cluster
         std::string tag1 = "{" + std::to_string(matchReqPacket->userPk1) + "}";
         std::string key1 = "userinfo:" + tag1;
 
@@ -186,11 +191,9 @@ void PacketManager::MakeRoom(uint16_t connObjNum_, uint16_t packetSize_, char* p
             user1->userLevel = static_cast<uint16_t>(std::stoul(*values[1]));
             user1->userMaxScore = std::stoul(*values[2]);
         }
-    }
 
-    values.clear();
+        values.clear();
 
-    { // Get matched user info from Redis Cluster
         std::string tag2 = "{" + std::to_string(matchReqPacket->userPk2) + "}";
         std::string key2 = "userinfo:" + tag2;
 
@@ -202,12 +205,16 @@ void PacketManager::MakeRoom(uint16_t connObjNum_, uint16_t packetSize_, char* p
             user2->userMaxScore = std::stoul(*values[2]);
         }
     }
+    catch (const sw::redis::Error& e) {
+        std::cerr << "Redis error: " << e.what() << std::endl;
+        std::cout << "Failed to Get Matched UserInfo" << std::endl;
+
+        matchResPacket.roomNum = 0;
+        connUsersManager->FindUser(centerServerObjNum)->PushSendMsg(sizeof(MATCHING_RESPONSE_FROM_GAME_SERVER), (char*)&matchResPacket);
+        return;
+    }
 
     std::discrete_distribution<int> dist(mapProbabilities.begin(), mapProbabilities.end()); // Randomly select map by probability
-
-    MATCHING_RESPONSE_FROM_GAME_SERVER matchResPacket;
-    matchResPacket.PacketId = (uint16_t)PACKET_ID::MATCHING_RESPONSE_FROM_GAME_SERVER;
-    matchResPacket.PacketLength = sizeof(MATCHING_RESPONSE_FROM_GAME_SERVER);
 
     if (!roomManager->MakeRoom(matchReqPacket->roomNum, dist(gen), 10, 30, user1, user2)) { // Room creation failed
         matchResPacket.roomNum = 0;
@@ -289,11 +296,20 @@ void PacketManager::RaidHit(uint16_t connObjNum_, uint16_t packetSize_, char* pP
                     raidEndReqPacket.teamScore = tempRoom->GetTeamScore(i);
                     connUsersManager->FindUser(tempUser->userConnObjNum)->PushSendMsg(sizeof(RAID_END_REQUEST), (char*)&raidEndReqPacket);
 
-                    if (tempUser->userScore.load() > tempUser->userMaxScore) { // Update Redis if new score exceeds previous best score
-                        pipe.zadd("ranking", tempUser->userId, (double)(tempUser->userScore.load()));
+                    if (tempUser->userScore.load() > tempUser->userMaxScore) {
+                        pipe.zadd("ranking", tempUser->userId, (double)(tempUser->userScore.load())); // Update Redis if new score exceeds previous best score
+
+                        { // Send sync message to Center Server if new score exceeds previous best score
+                            SYNC_HIGHSCORE_REQUEST shreq;
+                            shreq.PacketId = (uint16_t)PACKET_ID::SYNC_HIGHSCORE_REQUEST;
+                            shreq.PacketLength = sizeof(SYNC_HIGHSCORE_REQUEST);
+                            shreq.userScore = tempUser->userScore.load();
+                            strncpy_s(shreq.userId, tempUser->userId.c_str(), MAX_USER_ID_LEN);
+
+                            connUsersManager->FindUser(centerServerObjNum)->PushSendMsg(sizeof(RAID_END_REQUEST), (char*)&raidEndReqPacket);
+                        }
                     }
                 }
-
                 pipe.exec(); // Synchronize user rankings
                 roomManager->DeleteMob(tempRoom);
             }

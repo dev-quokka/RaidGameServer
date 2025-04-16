@@ -41,7 +41,6 @@ private:
     void PacketThread();
 
     void MakeRoom(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
-    void UserDisConnect(uint16_t connObjNum_);
 
     //SYSTEM
     void CenterServerConnectResponse(uint16_t connObjNum_, uint16_t packetSize_, char* pPacket_);
