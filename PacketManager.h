@@ -4,15 +4,13 @@
 #include <jwt-cpp/jwt.h>
 #include <winsock2.h>
 #include <windef.h>
-#include <cstdint>
 #include <iostream>
 #include <random>
-#include <unordered_map>
 #include <sw/redis++/redis++.h>
 
 #include "Packet.h"
 #include "ServerEnum.h"
-#include "RaidUserInfo.h"
+#include "RaidConfig.h"
 #include "RoomManager.h"
 #include "ConnUsersManager.h"
 

@@ -68,12 +68,12 @@ bool GameServer1::CenterServerConnect() {
 
     centerObj->ConnUserRecv();
 
-    CONNECT_REQUEST_TO_GAME_SERVER imReq;
-    imReq.PacketId = (UINT16)PACKET_ID::CONNECT_REQUEST_TO_GAME_SERVER;
-    imReq.PacketLength = sizeof(CONNECT_REQUEST_TO_GAME_SERVER);
-    imReq.gameServerNum = GAME_NUM;
+    RAID_SERVER_CONNECT_REQUEST imReq;
+    imReq.PacketId = (UINT16)PACKET_ID::RAID_SERVER_CONNECT_REQUEST;
+    imReq.PacketLength = sizeof(RAID_SERVER_CONNECT_REQUEST);
+    imReq.gameServerNum = GAME_SERVER_NUM;
 
-    centerObj->PushSendMsg(sizeof(CONNECT_REQUEST_TO_GAME_SERVER), (char*)&imReq);
+    centerObj->PushSendMsg(sizeof(RAID_SERVER_CONNECT_REQUEST), (char*)&imReq);
 
     return true;
 }
@@ -98,12 +98,12 @@ bool GameServer1::MatchingServerConnect() {
 
     matchingObj->ConnUserRecv();
 
-    CONNECT_REQUEST_TO_MATCHING_SERVER imReq;
-    imReq.PacketId = (UINT16)PACKET_ID::CONNECT_REQUEST_TO_MATCHING_SERVER;
-    imReq.PacketLength = sizeof(CONNECT_REQUEST_TO_MATCHING_SERVER);
-    imReq.gameServerNum = GAME_NUM;
+    MATCHING_SERVER_CONNECT_REQUEST_FROM_RAID_SERVER imReq;
+    imReq.PacketId = (UINT16)PACKET_ID::MATCHING_SERVER_CONNECT_REQUEST_FROM_RAID_SERVER;
+    imReq.PacketLength = sizeof(MATCHING_SERVER_CONNECT_REQUEST_FROM_RAID_SERVER);
+    imReq.gameServerNum = GAME_SERVER_NUM;
 
-    matchingObj->PushSendMsg(sizeof(CONNECT_REQUEST_TO_MATCHING_SERVER), (char*)&imReq);
+    matchingObj->PushSendMsg(sizeof(MATCHING_SERVER_CONNECT_REQUEST_FROM_RAID_SERVER), (char*)&imReq);
 
     return true;
 }

@@ -148,7 +148,7 @@
     <ClInclude Include="OverLappedManager.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="PacketManager.h" />
-    <ClInclude Include="RaidUserInfo.h" />
+    <ClInclude Include="RaidConfig.h" />
     <ClInclude Include="RoomManager.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="ServerEnum.h" />

@@ -12,7 +12,7 @@ const int MAX_SERVER_USERS = 128;
 const int MAX_JWT_TOKEN_LEN = 256;
 const int MAX_SCORE_SIZE = 512;
 
-constexpr int GAME_NUM = 1;
+constexpr int GAME_SERVER_NUM = 1;
 
 struct DataPacket {
 	uint32_t dataSize;
@@ -54,18 +54,15 @@ struct MATCHING_SERVER_CONNECT_RESPONSE_TO_RAID_SERVER : PACKET_HEADER {
 };
 
 struct MATCHING_REQUEST_TO_GAME_SERVER : PACKET_HEADER {
-	uint16_t userPk1;
-	uint16_t userPk2;
-	uint16_t userCenterObjNum1;
-	uint16_t userCenterObjNum2;
+	uint16_t userPk;
+	uint16_t userCenterObjNum;
 	uint16_t roomNum;
 };
 
 struct MATCHING_RESPONSE_FROM_GAME_SERVER : PACKET_HEADER {
-	uint16_t userCenterObjNum1;
-	uint16_t userCenterObjNum2;
-	uint16_t userRaidServerObjNum1;
-	uint16_t userRaidServerObjNum2;
+	uint16_t userCenterObjNum;
+	uint16_t userRaidServerObjNum;
+	uint16_t serverNum;
 	uint16_t roomNum;
 };
 
@@ -85,6 +82,7 @@ struct RAID_TEAMINFO_REQUEST : PACKET_HEADER {
 struct RAID_TEAMINFO_RESPONSE : PACKET_HEADER {
 	char teamId[MAX_USER_ID_LEN + 1];
 	uint16_t teamLevel;
+	uint16_t userRaidServerObjNum;
 };
 
 struct RAID_START : PACKET_HEADER {
@@ -102,9 +100,13 @@ struct RAID_HIT_RESPONSE : PACKET_HEADER {
 	unsigned int currentMobHp;
 };
 
-struct RAID_END_REQUEST : PACKET_HEADER {
+struct RAID_END : PACKET_HEADER {
+
+};
+
+struct SEND_RAID_SCORE : PACKET_HEADER {
 	unsigned int userScore;
-	unsigned int teamScore;
+	uint16_t userRaidServerObjNum;
 };
 
 struct SYNC_HIGHSCORE_REQUEST : PACKET_HEADER {
@@ -143,6 +145,8 @@ enum class PACKET_ID : uint16_t {
 
 	SYNC_HIGHSCORE_REQUEST = 8091,
 
-	RAID_END_REQUEST = 8101,
-	RAID_END_REQUEST_TO_MATCHING_SERVER = 8102
+	RAID_END = 8101,
+	SEND_RAID_SCORE = 8102,
+
+	RAID_END_REQUEST_TO_MATCHING_SERVER = 8111,
 };
