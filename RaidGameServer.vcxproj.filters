@@ -30,7 +30,7 @@
     <ClCompile Include="OverLappedManager.cpp">
       <Filter>헤더 파일\OverLappedManager</Filter>
     </ClCompile>
-    <ClCompile Include="PacketManager.cpp">
+    <ClCompile Include="RedisManager.cpp">
       <Filter>헤더 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameServer1.cpp">
@@ -59,7 +59,7 @@
     <ClInclude Include="Packet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="PacketManager.h">
+    <ClInclude Include="RedisManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameServer1.h">

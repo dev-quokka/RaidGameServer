@@ -1,6 +1,3 @@
-#include <iostream>
-
-#include "ServerEnum.h"
 #include "GameServer1.h"
 
 // *** Start the matching server first, then the game server ***
