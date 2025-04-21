@@ -13,7 +13,7 @@ constexpr int UDP_PORT = 50001; // Gameserver1 Udp Port
 struct RaidUserInfo {
     std::string userId = "";
     sockaddr_in userAddr;
-    unsigned int userMaxScore = 100;
+    unsigned int userMaxScore = 0;
     std::atomic<unsigned int> userScore = 0;
     uint16_t userPk;
     uint16_t userLevel = 1;

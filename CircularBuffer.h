@@ -1,6 +1,7 @@
 #pragma once
 #include <mutex>
 #include <cstdint>
+#include <iostream>
 
 class CircularBuffer {
 public:
