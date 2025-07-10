@@ -11,12 +11,13 @@ enum class ServerType : uint16_t {
 	RaidGameServer01 = 3,
 
 	// Matching Server (5)
-	MatchingServer = 5,
+	MatchingServer = 5
 };
 
 struct ServerAddress {
 	std::string ip;
 	uint16_t port;
+	uint16_t serverObjNum;
 };
 
 extern std::unordered_map<ServerType, ServerAddress> ServerAddressMap;

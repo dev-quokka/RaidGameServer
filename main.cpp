@@ -6,8 +6,8 @@ const uint16_t maxThreadCount = 1;
 
 std::unordered_map<ServerType, ServerAddress> ServerAddressMap = { // Set server addresses
     { ServerType::CenterServer,     { "127.0.0.1", 9090 } },
-    { ServerType::RaidGameServer01, { "127.0.0.1", 9510 } },
-    { ServerType::MatchingServer,   { "127.0.0.1", 9131 } }
+    { ServerType::MatchingServer,   { "127.0.0.1", 9131 } },
+    { ServerType::RaidGameServer01, { "127.0.0.1", 9510 } }
 };
 
 int main() {
